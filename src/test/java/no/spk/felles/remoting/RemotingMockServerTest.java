@@ -1,38 +1,34 @@
 package no.spk.felles.remoting;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+import java.io.IOException;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
+
 public class RemotingMockServerTest {
 
-    @Autowired
-    private RemoteService remoteService;
-
     @Test
-    public void registerContextsAndPerformClientRequest() throws IOException {
+    public void registerContextsAndPerformClientRequest() {
+
         List<RemoteContext> remoteContexts = asList(
                 new RemoteContextImpl("/test", new TestResponse("test")),
                 new RemoteContextImpl("/person", new TestResponse("person")),
                 new RemoteContextImpl("/event", new TestResponse("event"))
         );
 
-        RemotingMockServer mockServer = new RemotingMockServerImpl(TestConfiguration.SERVER_PORT, remoteContexts);
+        RemotingMockServer mockServer = new RemotingMockServerImpl(remoteContexts);
         mockServer.start();
 
-        TestResponse entity = (TestResponse) remoteService.getEntity();
+        HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
+        httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + mockServer.getPort() + "/test");
+        httpInvokerProxyFactoryBean.afterPropertiesSet();
+        TestResponse entity = (TestResponse) RemoteServiceFactory.proxy(RemoteService.class, mockServer.getPort()).getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
 
