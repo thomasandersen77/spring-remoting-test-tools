@@ -16,14 +16,30 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class RemotingMockServerBeanTest {
 
     @Autowired
-    private RemoteService remoteService;
+    private RemoteService remoteServiceTest;
+    @Autowired
+    private RemoteService remoteServicePerson;
+    @Autowired
+    private RemoteService remoteServiceEvent;
 
     @Test
-    public void registerContextsAndPerformClientRequest() {
-
-        TestResponse entity = (TestResponse) remoteService.getEntity();
+    public void registerContextAndPerformClientRequest_test() {
+        TestResponse entity = (TestResponse) remoteServiceTest.getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
+    }
 
+    @Test
+    public void registerContextAndPerformClientRequest_person() {
+        TestResponse entity = (TestResponse) remoteServicePerson.getEntity();
+        assertTrue(() -> entity != null);
+        assertEquals(entity.getStringEntity(), "person");
+    }
+
+    @Test
+    public void registerContextAndPerformClientRequest_event() {
+        TestResponse entity = (TestResponse) remoteServiceEvent.getEntity();
+        assertTrue(() -> entity != null);
+        assertEquals(entity.getStringEntity(), "event");
     }
 }

@@ -14,11 +14,27 @@ import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 @Configuration
 public class TestSpringConfiguration {
 
-    @Bean
-    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter(@Autowired(required = true) RemotingMockServer remotingMockServer) {
+    @Bean(name = "remoteServiceTest")
+    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter1(@Autowired(required = true) RemotingMockServer remotingMockServer) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
         httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/test");
+        return httpInvokerProxyFactoryBean;
+    }
+
+    @Bean(name = "remoteServiceEvent")
+    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter2(@Autowired(required = true) RemotingMockServer remotingMockServer) {
+        HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
+        httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/event");
+        return httpInvokerProxyFactoryBean;
+    }
+
+    @Bean(name = "remoteServicePerson")
+    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter3(@Autowired(required = true) RemotingMockServer remotingMockServer) {
+        HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
+        httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/person");
         return httpInvokerProxyFactoryBean;
     }
 
