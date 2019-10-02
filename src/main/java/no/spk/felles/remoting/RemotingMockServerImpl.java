@@ -31,7 +31,7 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
                     server = HttpServer.create(new InetSocketAddress(port), 0);
                 } catch (BindException e) {
                     long time = System.currentTimeMillis() - start;
-                    if(time > 200){
+                    if(time > 500){
                         port = PortUtil.getPort(true);
                         start = System.currentTimeMillis();
                     }

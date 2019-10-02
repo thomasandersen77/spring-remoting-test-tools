@@ -9,7 +9,9 @@ public class PortUtil {
     public static Integer getPort(boolean reset) {
         try {
             if (threadLocal.get() == null || reset) {
-                threadLocal.set(new ServerSocket(0).getLocalPort());
+                final ServerSocket serverSocket = new ServerSocket(0);
+                threadLocal.set(serverSocket.getLocalPort());
+                serverSocket.close();
                 return threadLocal.get();
             }
             else
