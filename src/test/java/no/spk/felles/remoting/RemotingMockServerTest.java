@@ -4,11 +4,9 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 public class RemotingMockServerTest {
 
@@ -24,11 +22,7 @@ public class RemotingMockServerTest {
         RemotingMockServer mockServer = new RemotingMockServerImpl(remoteContexts);
         mockServer.start();
 
-        HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
-        httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + mockServer.getPort() + "/test");
-        httpInvokerProxyFactoryBean.afterPropertiesSet();
-        TestResponse entity = (TestResponse) RemoteServiceFactory.proxy(RemoteService.class, mockServer.getPort()).getEntity();
+        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteService.class, mockServer.getPort(), "test").getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
 

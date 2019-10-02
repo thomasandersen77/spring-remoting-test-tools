@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.BindException;
 import java.net.InetSocketAddress;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -23,7 +22,7 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
     private int port;
 
     public RemotingMockServerImpl(List<RemoteContext> contexts) {
-        port = RandomPortUtil.getPort();
+        port = PortUtil.dynamicPort();
         final StopWatch stopWatch = new StopWatch();
         try {
             stopWatch.start();
@@ -32,7 +31,7 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
                     server = HttpServer.create(new InetSocketAddress(port), 0);
                 } catch (BindException e) {
                     if(stopWatch.getTotalTimeMillis() > 500){
-                        port = RandomPortUtil.getPort();
+                        port = PortUtil.dynamicPort();
                         stopWatch.stop();
                         stopWatch.start();
                     }
