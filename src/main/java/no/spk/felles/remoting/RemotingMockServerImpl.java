@@ -84,12 +84,12 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        server.start();
+        start();
     }
 
     @Override
     public void destroy() throws Exception {
-        server.stop(0);
+        stop();
     }
 
     public int getPort() {

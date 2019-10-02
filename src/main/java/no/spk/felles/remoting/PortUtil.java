@@ -6,6 +6,10 @@ import java.net.ServerSocket;
 public class PortUtil {
     private static ThreadLocal<Integer> threadLocal = new ThreadLocal<>();
 
+    public static Integer getPort() {
+        return getPort(false);
+    }
+
     public static Integer getPort(boolean reset) {
         try {
             if (threadLocal.get() == null || reset) {
