@@ -11,12 +11,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = TestServerConfiguration.class)
+@SpringBootTest(classes = TestSpringConfiguration.class)
 @ActiveProfiles("mockServerBean")
 public class RemotingMockServerBeanTest {
 
-    //@Autowired
-    //private RemotingMockServer remotingMockServer;
     @Autowired
     private RemoteService remoteService;
 
@@ -27,6 +25,5 @@ public class RemotingMockServerBeanTest {
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
 
-        //remotingMockServer.stop();
     }
 }

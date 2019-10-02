@@ -1,9 +1,9 @@
 package no.spk.felles.remoting;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.io.Serializable;
 
 @AllArgsConstructor
 @Getter

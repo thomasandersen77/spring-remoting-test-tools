@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,10 +12,10 @@ import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 
 @Profile("mockServerBean")
 @Configuration
-public class TestServerConfiguration {
+public class TestSpringConfiguration {
 
     @Bean
-    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter(RemotingMockServer remotingMockServer) {
+    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter(@Autowired(required = true) RemotingMockServer remotingMockServer) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
         httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/test");
