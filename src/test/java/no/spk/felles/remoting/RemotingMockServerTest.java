@@ -1,31 +1,32 @@
 package no.spk.felles.remoting;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-public class RemotingMockServerTest {
+@ExtendWith(MockServerExtension.class)
+public class RemotingMockServerTest implements TestdataSupport {
 
     @Test
     public void registerContextsAndPerformClientRequest() {
 
-        List<RemoteContext> remoteContexts = asList(
+        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteService.class, PortUtil.getPort(), "test").getEntity();
+        assertTrue(() -> entity != null);
+        assertEquals(entity.getStringEntity(), "test");
+    }
+
+    @Override
+    public List<RemoteContext> getRemoteContexts() {
+        return asList(
                 new RemoteContextImpl("/test", new TestResponse("test")),
                 new RemoteContextImpl("/person", new TestResponse("person")),
                 new RemoteContextImpl("/event", new TestResponse("event"))
         );
-
-        RemotingMockServer mockServer = new RemotingMockServerImpl(remoteContexts);
-        mockServer.start();
-
-        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteService.class, mockServer.getPort(), "test").getEntity();
-        assertTrue(() -> entity != null);
-        assertEquals(entity.getStringEntity(), "test");
-
-        mockServer.stop();
     }
 }
