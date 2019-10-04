@@ -10,21 +10,57 @@ import java.util.List;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.support.RemoteInvocationResult;
 
 
 public class RemotingMockServerImpl implements RemotingMockServer, InitializingBean, DisposableBean {
-
+    private static final Logger log = LoggerFactory.getLogger(RemotingMockServerImpl.class);
     private HttpServer server;
-    private List<RemoteContext> contexts;
     private int port;
 
-    public RemotingMockServerImpl(List<RemoteContext> contexts) {
-        port = PortUtil.getPort(true);
+    public RemotingMockServerImpl() {
+        this.createServerInstance();
+    }
 
+    public RemotingMockServerImpl(List<RemoteContext> contexts) {
+
+
+        this.createServerInstance();
+        this.createServerContexts(contexts);
+    }
+
+    private void createServerContexts(List<RemoteContext> contexts) {
+        server.createContext("/ping", exchange -> {
+            String response = "pong";
+            exchange.sendResponseHeaders(200, response.length());
+            exchange.getResponseHeaders().add("Context-Type", "text/plain");
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        });
+
+        for (RemoteContext c : contexts) {
+            HttpContext context = server.createContext(c.getPath(), exchange -> {
+                if(! (c.getResponse() instanceof Serializable))
+                    throw new RuntimeException("Respons object must implement java.io.Serializable: " + c.getClass());
+
+                exchange.sendResponseHeaders(200, 0);
+                RemoteInvocationResult result = new RemoteInvocationResult(c.getResponse());
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(exchange.getResponseBody());
+                objectOutputStream.writeObject(result);
+                objectOutputStream.close();
+            });
+            log.info("Registered ResponseContext: {}, HttpContext: {}", c.toString(), context.getPath());
+        }
+    }
+
+    void createServerInstance() {
         try {
+            this.port = PortUtil.getPort(true);
             long start = System.currentTimeMillis();
             while (server == null) {
                 try {
@@ -40,45 +76,22 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        server.createContext("/index", exchange -> {
-            String response = "<h3>Server start success if you see this message</h3>" + "<h5>Port: " + port + "</h5>";
-            exchange.sendResponseHeaders(200, response.length());
-            exchange.getResponseHeaders().add("Context-Type", "application/html");
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        });
-
-        this.contexts = contexts;
-        for (RemoteContext c : this.contexts) {
-            HttpContext context = server.createContext(c.getPath(), exchange -> {
-                if(! (c.getResponse() instanceof Serializable))
-                    throw new RuntimeException("Respons object must implement java.io.Serializable: " + c.getClass());
-
-                exchange.sendResponseHeaders(200, 0);
-                RemoteInvocationResult result = new RemoteInvocationResult(c.getResponse());
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(exchange.getResponseBody());
-                objectOutputStream.writeObject(result);
-                objectOutputStream.close();
-            });
-            System.out.println("Registered ResponseContext: " + c.toString() + ", HttpContext: " + context.getPath());
-        }
     }
 
     @Override
     public void start() {
-        System.out.println("Start server...");
+        log.info("Start server on port=["+getPort()+"]...");
         server.start();
     }
 
     @Override
     public void stop() {
-        System.out.println("Stopping server...");
+        log.info("Stopping server...");
         server.stop(0);
     }
 
     public void setContexts(List<RemoteContext> contexts) {
-        this.contexts = contexts;
+        this.createServerContexts(contexts);
     }
 
 

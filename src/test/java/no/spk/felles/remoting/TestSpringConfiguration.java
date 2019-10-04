@@ -15,10 +15,10 @@ import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 public class TestSpringConfiguration {
 
     @Bean(name = "remoteServiceTest")
-    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter1(@Autowired(required = true) RemotingMockServer remotingMockServer) {
+    public HttpInvokerProxyFactoryBean httpInvokerServiceExporter1(@Autowired RemotingMockServer remotingMockServer) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/test");
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/test");
         return httpInvokerProxyFactoryBean;
     }
 
@@ -26,7 +26,7 @@ public class TestSpringConfiguration {
     public HttpInvokerProxyFactoryBean httpInvokerServiceExporter2(@Autowired(required = true) RemotingMockServer remotingMockServer) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/event");
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/event");
         return httpInvokerProxyFactoryBean;
     }
 
@@ -34,7 +34,7 @@ public class TestSpringConfiguration {
     public HttpInvokerProxyFactoryBean httpInvokerServiceExporter3(@Autowired(required = true) RemotingMockServer remotingMockServer) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + remotingMockServer.getPort() + "/person");
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/person");
         return httpInvokerProxyFactoryBean;
     }
 
