@@ -13,7 +13,7 @@ public class MockServerExtension implements BeforeEachCallback, AfterEachCallbac
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
         Optional<Object> testInstance = extensionContext.getTestInstance();
-        if(testInstance.isEmpty() || !(testInstance.get() instanceof TestdataSupport))
+        if(testInstance.isEmpty() || !(testInstance.get() instanceof TestdataSupport) || ((TestdataSupport) testInstance.get()).getRemoteContexts() == null)
             throw new RuntimeException("Missing TestdataSupport test instance");
         mockServer = new RemotingMockServerImpl(((TestdataSupport) testInstance.get()).getRemoteContexts());
         mockServer.start();
