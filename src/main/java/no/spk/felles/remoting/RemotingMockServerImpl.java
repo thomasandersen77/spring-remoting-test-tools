@@ -48,7 +48,11 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
                 if(! (c.getResponse() instanceof Serializable))
                     throw new RuntimeException("Respons object must implement java.io.Serializable: " + c.getClass());
 
-                exchange.sendResponseHeaders(200, 0);
+                if(c.getResponse() instanceof Throwable)
+                    exchange.sendResponseHeaders(500, 0);
+                else
+                    exchange.sendResponseHeaders(200, 0);
+
                 RemoteInvocationResult result = new RemoteInvocationResult(c.getResponse());
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(exchange.getResponseBody());
                 objectOutputStream.writeObject(result);
