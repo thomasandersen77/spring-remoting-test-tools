@@ -23,29 +23,29 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class RemotingMockServerBeanTest {
 
     @Autowired
-    private RemoteService remoteServiceTest;
+    private RemoteClient remoteClientTest;
     @Autowired
-    private RemoteService remoteServicePerson;
+    private RemoteClient remoteClientPerson;
     @Autowired
-    private RemoteService remoteServiceEvent;
+    private RemoteClient remoteClientEvent;
 
     @Test
     public void registerContextAndPerformClientRequest_test() {
-        TestResponse entity = (TestResponse) remoteServiceTest.getEntity();
+        TestResponse entity = (TestResponse) remoteClientTest.getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
     }
 
     @Test
     public void registerContextAndPerformClientRequest_person() {
-        TestResponse entity = (TestResponse) remoteServicePerson.getEntity();
+        TestResponse entity = (TestResponse) remoteClientPerson.getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "person");
     }
 
     @Test
     public void registerContextAndPerformClientRequest_event() {
-        TestResponse entity = (TestResponse) remoteServiceEvent.getEntity();
+        TestResponse entity = (TestResponse) remoteClientEvent.getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "event");
     }
@@ -54,26 +54,26 @@ public class RemotingMockServerBeanTest {
     @Configuration
     public static class TestSpringConfiguration {
 
-        @Bean(name = "remoteServiceTest")
+        @Bean(name = "remoteClientTest")
         public HttpInvokerProxyFactoryBean httpInvokerServiceExporter1(@Autowired RemotingMockServer remotingMockServer) {
             HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
-            httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+            httpInvokerProxyFactoryBean.setServiceInterface(RemoteClient.class);
             httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/test");
             return httpInvokerProxyFactoryBean;
         }
 
-        @Bean(name = "remoteServiceEvent")
+        @Bean(name = "remoteClientEvent")
         public HttpInvokerProxyFactoryBean httpInvokerServiceExporter2(@Autowired(required = true) RemotingMockServer remotingMockServer) {
             HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
-            httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+            httpInvokerProxyFactoryBean.setServiceInterface(RemoteClient.class);
             httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/event");
             return httpInvokerProxyFactoryBean;
         }
 
-        @Bean(name = "remoteServicePerson")
+        @Bean(name = "remoteClientPerson")
         public HttpInvokerProxyFactoryBean httpInvokerServiceExporter3(@Autowired(required = true) RemotingMockServer remotingMockServer) {
             HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
-            httpInvokerProxyFactoryBean.setServiceInterface(RemoteService.class);
+            httpInvokerProxyFactoryBean.setServiceInterface(RemoteClient.class);
             httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + PortUtil.getPort() + "/person");
             return httpInvokerProxyFactoryBean;
         }

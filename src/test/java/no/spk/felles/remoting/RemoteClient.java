@@ -1,5 +1,5 @@
 package no.spk.felles.remoting;
 
-public interface RemoteService<T> {
+public interface RemoteClient<T> {
     T getEntity() throws IllegalArgumentException;
 }

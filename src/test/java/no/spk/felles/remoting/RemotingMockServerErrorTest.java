@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.remoting.RemoteAccessException;
@@ -15,7 +14,7 @@ public class RemotingMockServerErrorTest implements TestdataSupport {
 
     @Test
     public void registerContextsAndPerformClientRequest() {
-        assertThrows(RemoteAccessException.class, () -> HttpInvokerProxyFactory.proxy(RemoteService.class, PortUtil.getPort(), "test").getEntity());
+        assertThrows(RemoteAccessException.class, () -> HttpInvokerProxyFactory.proxy(RemoteClient.class, PortUtil.getPort(), "test").getEntity());
     }
 
     @Override

@@ -2,7 +2,6 @@ package no.spk.felles.remoting;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class RemotingMockServerTest implements TestdataSupport {
     @Test
     public void registerContextsAndPerformClientRequest() {
 
-        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteService.class, PortUtil.getPort(), "test").getEntity();
+        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteClient.class, PortUtil.getPort(), "test").getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
     }
