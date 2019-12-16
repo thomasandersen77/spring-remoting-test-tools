@@ -14,7 +14,7 @@ public class RemotingMockServerErrorTest implements TestdataSupport {
 
     @Test
     public void registerContextsAndPerformClientRequest() {
-        assertThrows(RemoteAccessException.class, () -> HttpInvokerProxyFactory.proxy(RemoteClient.class, PortUtil.getPort(), "test").getEntity());
+        assertThrows(RemoteAccessException.class, () -> HttpInvokerProxyFactory.proxy(RemoteClient.class, "test").getEntity());
     }
 
     @Override

@@ -16,10 +16,8 @@ public class PortUtil {
                 final ServerSocket serverSocket = new ServerSocket(0);
                 threadLocal.set(serverSocket.getLocalPort());
                 serverSocket.close();
-                return threadLocal.get();
             }
-            else
-                return threadLocal.get();
+            return threadLocal.get();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

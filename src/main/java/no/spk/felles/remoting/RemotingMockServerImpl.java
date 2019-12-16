@@ -27,8 +27,6 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
     }
 
     public RemotingMockServerImpl(List<RemoteContext> contexts) {
-
-
         this.createServerInstance();
         this.createServerContexts(contexts);
     }
@@ -45,10 +43,10 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
 
         for (RemoteContext c : contexts) {
             HttpContext context = server.createContext(c.getPath(), exchange -> {
-                if(! (c.getResponse() instanceof Serializable))
+                if (!(c.getResponse() instanceof Serializable))
                     throw new RuntimeException("Respons object must implement java.io.Serializable: " + c.getClass());
 
-                if(c.getResponse() instanceof Throwable)
+                if (c.getResponse() instanceof Throwable)
                     exchange.sendResponseHeaders(500, 0);
                 else
                     exchange.sendResponseHeaders(200, 0);
@@ -62,16 +60,22 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
         }
     }
 
-    void createServerInstance() {
+    private final Object lock = new Object();
+
+    synchronized void createServerInstance() {
         try {
-            this.port = PortUtil.getPort(true);
             long start = System.currentTimeMillis();
             while (server == null) {
                 try {
-                    server = HttpServer.create(new InetSocketAddress(port), 0);
+                    synchronized (lock) {
+                        this.port = PortUtil.getPort(true);
+                        server = HttpServer.create(new InetSocketAddress(port), 0);
+                        System.setProperty("mock.server.port", String.valueOf(port));
+                        System.err.println("Mock Server Port: " + port);
+                    }
                 } catch (BindException e) {
                     long time = System.currentTimeMillis() - start;
-                    if(time > 500){
+                    if (time > 500) {
                         port = PortUtil.getPort(true);
                         start = System.currentTimeMillis();
                     }
@@ -84,7 +88,7 @@ public class RemotingMockServerImpl implements RemotingMockServer, InitializingB
 
     @Override
     public void start() {
-        log.info("Start server on port=["+getPort()+"]...");
+        log.info("Start server on port=[" + getPort() + "]...");
         server.start();
     }
 

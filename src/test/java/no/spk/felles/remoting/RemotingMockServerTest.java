@@ -15,7 +15,7 @@ public class RemotingMockServerTest implements TestdataSupport {
     @Test
     public void registerContextsAndPerformClientRequest() {
 
-        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteClient.class, PortUtil.getPort(), "test").getEntity();
+        TestResponse entity = (TestResponse) HttpInvokerProxyFactory.proxy(RemoteClient.class, "test").getEntity();
         assertTrue(() -> entity != null);
         assertEquals(entity.getStringEntity(), "test");
     }
