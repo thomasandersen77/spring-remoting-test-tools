@@ -7,7 +7,7 @@ public class HttpInvokerProxyFactory {
     public static <T> T proxy(Class<T> tClass, String path) {
         HttpInvokerProxyFactoryBean httpInvokerProxyFactoryBean = new HttpInvokerProxyFactoryBean();
         httpInvokerProxyFactoryBean.setServiceInterface(tClass);
-        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + System.getProperty("mock.port") + "/" + path);
+        httpInvokerProxyFactoryBean.setServiceUrl("http://localhost:" + System.getProperty("mock.server.port") + "/" + path);
         httpInvokerProxyFactoryBean.afterPropertiesSet();
         return (T) httpInvokerProxyFactoryBean.getObject();
     }
